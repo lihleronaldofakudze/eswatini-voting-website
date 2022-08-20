@@ -48,7 +48,10 @@ const RegisterPage = () => {
           email,
           password,
         })
-        .then((result) => alert(result))
+        .then((result) => {
+          localStorage.setItem("currentUser", natid);
+          localStorage.setItem("voted", false);
+        })
         .then((error) => alert(error));
     } else {
       window.alert("Please enter required details");

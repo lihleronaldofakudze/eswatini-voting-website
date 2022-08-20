@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
+import axios from "axios";
+
 // material ui
 import {
   Container,
@@ -17,13 +19,32 @@ const ProfilePage = () => {
   const router = useRouter();
 
   // state
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [natid, setNatid] = useState("");
   const [age, setAge] = useState("");
   const [region, setRegion] = useState("");
   const [city, setCity] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const natid = localStorage.getItem("currentUser");
+    axios.get(`http://localhost:3000/api/voter/${natid}`).then((data) => {
+      console.log(data.data[0]);
+      const { fullname, surname, age, region, city, natid, email, password } =
+        data.data[0];
+      setFullname(fullname);
+      setNatid(natid);
+      setAge(age);
+      setRegion(region);
+      setCity(city);
+      setEmail(email);
+      setPassword(password);
+    });
+  });
 
   const logout = async () => {
+    localStorage.clear();
     router.push("/login");
   };
 
@@ -56,8 +77,8 @@ const ProfilePage = () => {
           fullWidth
           type="text"
           margin="normal"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={fullname}
+          onChange={(e) => setFullname(e.target.value)}
         />
         <TextField
           variant="standard"
@@ -65,8 +86,8 @@ const ProfilePage = () => {
           fullWidth
           type="text"
           margin="normal"
-          value={surname}
-          onChange={(e) => setSurname(e.target.value)}
+          value={natid}
+          onChange={(e) => setNatid(e.target.value)}
         />
         <TextField
           variant="standard"
@@ -95,6 +116,15 @@ const ProfilePage = () => {
           value={city}
           onChange={(e) => setCity(e.target.value)}
         />
+        <TextField
+          variant="standard"
+          label="Email"
+          fullWidth
+          type="text"
+          margin="normal"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
         <Button variant="contained" color="error" fullWidth>
           Save New Changes
         </Button>
@@ -113,3 +143,15 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+
+// export const getStaticProps = async () => {
+//   const natid = window.localStorage.getItem("currentUser");
+//   const getCandidate = await fetch(`http://localhost:3000/api/voter/${natid}`);
+//   const candidate = await getCandidate.json();
+
+//   return {
+//     props: {
+//       candidate,
+//     },
+//   };
+// };

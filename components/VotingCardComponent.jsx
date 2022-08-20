@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 // material ui
 import {
@@ -10,9 +11,27 @@ import {
   Button,
 } from "@mui/material";
 
-const VotingCardComponent = ({ image, name, id, votes, disabled }) => {
-  // variables
-  const addVote = async () => {};
+const VotingCardComponent = ({ image, name, position }) => {
+  // state
+  const [voted, setVoted] = useState(false);
+
+  useEffect(() => {
+    let v = localStorage.getItem("voted");
+    setVoted(v);
+  }, []);
+
+  const addVote = async () => {
+    let natid = localStorage.getItem("currentUser");
+    await axios
+      .post("http://localhost:3000/api/votings/voting", {
+        candidates_id: position,
+        voter_id: natid,
+        voted_for: name,
+      })
+      .then((_) => {
+        localStorage.setItem("voted", true);
+      });
+  };
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
@@ -32,7 +51,7 @@ const VotingCardComponent = ({ image, name, id, votes, disabled }) => {
           color="error"
           fullWidth
           onClick={addVote}
-          disabled={disabled}
+          disabled={voted}
         >
           {`Vote ${name}`}
         </Button>
