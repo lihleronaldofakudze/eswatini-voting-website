@@ -1,11 +1,8 @@
 import { executeQuery } from "../config/db";
 
-const getVoting = async (req, res) => {
-  let voting = await executeQuery(
-    "SELECT * FROM votings WHEERE candidates_id = ?",
-    [req.query.voting]
-  );
-  res.json(voting);
+const getVotings = async (req, res) => {
+  let votings = await executeQuery("SELECT * FROM votings", []);
+  res.json(votings);
 };
 
 const vote = async (req, res) => {
@@ -16,4 +13,4 @@ const vote = async (req, res) => {
   res.send({ result: 0 });
 };
 
-export { getVoting, vote };
+export { getVotings, vote };

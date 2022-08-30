@@ -16,9 +16,13 @@ const VotingCardComponent = ({ image, name, position }) => {
   const [voted, setVoted] = useState(false);
 
   useEffect(() => {
-    let v = localStorage.getItem("voted");
-    setVoted(v);
-  }, []);
+    const natid = localStorage.getItem("currentUser");
+    axios.get(`http://localhost:3000/api/voter/${natid}`).then((data) => {
+      console.log(data.data[0]);
+      const { voted } = data.data[0];
+      setVoted(voted);
+    });
+  });
 
   const addVote = async () => {
     let natid = localStorage.getItem("currentUser");
@@ -28,8 +32,10 @@ const VotingCardComponent = ({ image, name, position }) => {
         voter_id: natid,
         voted_for: name,
       })
-      .then((_) => {
-        localStorage.setItem("voted", true);
+      .then(async (_) => {
+        axios.patch(`http://localhost:3000/api/voter/${natid}`).then((_) => {
+          window.location.reload();
+        });
       });
   };
   return (

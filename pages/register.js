@@ -50,9 +50,8 @@ const RegisterPage = () => {
         })
         .then((result) => {
           localStorage.setItem("currentUser", natid);
-          localStorage.setItem("voted", false);
-        })
-        .then((error) => alert(error));
+          router.push("/");
+        });
     } else {
       window.alert("Please enter required details");
     }
